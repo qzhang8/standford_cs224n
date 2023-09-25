@@ -55,21 +55,28 @@ def compute_co_occurrence_matrix(corpus, window_size=4):
     
     ### we should try to scan the corpus once to calculate the co-occurence.
     for doc in corpus:
+        pos = 0
         for word in doc:
             #find the index for word
             row_index = words.index(word)
             #now, find the surrounding word
             for s in range(-window_size,  window_size):
-                 if (s == 0):
+                if (s == 0):
                     continue   #ignore the central word itself
-                pos = doc.index(word)  #position in the doc
-                if (pos < window_size - 1) or (pos > len(doc) - window_size):
+
+                if ((pos + s < 0) or (pos + s > len(doc) -1)) :
+                    word2ind[word] = row_index
+                    pos = pos + 1
                     continue
                 sur_word = doc[pos+s]
                 col_index = words.index(sur_word)
+
+          
                 M[row_index, col_index] = M[row_index, col_index] + 1
-             
-                word2ind[word] = (row_index, col_index)
+                M[col_index, row_index] = M[col_index, row_index] + 1
+               
+                word2ind[word] = row_index
+                pos = pos + 1
   
     ### SOLUTION END
 
